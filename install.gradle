@@ -1,0 +1,50 @@
+apply plugin: 'com.github.dcendents.android-maven'
+
+def publishedGroupId = "com.github.zfeng"
+def artifact = "library"
+def siteUrl = 'https://github.com/zhoufengAndroid/JCenterDemo'
+def gitUrl = 'https://github.com/zhoufengAndroid/JCenterDemo.git'
+
+group = publishedGroupId                               // Maven Group ID for the artifact
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+//                groupId publishedGroupId
+//                artifactId artifact
+
+                // Add your description here
+                name "JCenterDemo" //替换成自己的工程名称
+                description "..."  //替换成自己的工程描述
+                url siteUrl  //替换成自己的工程网络地址，例如github中发布的源码地址
+
+                // Set your license
+                licenses {
+                    license {
+                        name "The Apache Software License, Version 2.0"
+                        //替换证书类型，例如'The Apache Software License, Version 2.0'
+                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        //替换证书地址，例如'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+//                }
+                    developers {
+                        developer {
+                            id "zfeng"  //替换成自己的id
+                            name "zfeng"  //替换成自己的名字
+                            email "zf709099636@aliyun.com"  //替换成自己的邮箱
+                        }
+                    }
+                    scm {
+                        connection gitUrl  //替换成自己的Git仓库地址。
+                        developerConnection gitUrl  //替换成自己的Git仓库地址。
+                        url siteUrl  //替换成自己的项目主页。
+
+                    }
+                }
+            }
+        }
+    }
+}

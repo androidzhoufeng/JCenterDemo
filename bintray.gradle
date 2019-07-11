@@ -1,0 +1,82 @@
+apply plugin: 'com.jfrog.bintray'
+
+ext {
+    bintrayRepo = 'zfeng'
+    bintrayName = 'library'
+
+    publishedGroupId = 'com.github.zfeng'
+    libraryName = 'library'
+    artifact = 'library'
+
+    libraryDescription = 'A jcenter demo on Android'
+
+    siteUrl = 'https://github.com/zhoufengAndroid/JCenterDemo'
+    gitUrl = 'https://github.com/zhoufengAndroid/JCenterDemo.git'
+
+    libraryVersion = "1.0.3"
+
+    developerId = 'zfeng'
+    developerName = 'zfeng'
+    developerEmail = 'zf709099636@aliyun.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+//
+//def libraryVersion = "1.0.3"//版本号
+//def siteUrl = 'https://github.com/zhoufengAndroid/JCenterDemo'
+//def gitUrl = 'https://github.com/zhoufengAndroid/JCenterDemo.git'
+
+version = libraryVersion
+
+task sourcesJar(type: Jar) { //这里不需要修改
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) { //这里不需要修改
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false // 忽略注释语法错误，如果用jdk1.8你的注释写的不规范就编译不过。
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) { //这里不需要修改
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts { //这里不需要修改
+    archives javadocJar
+    archives sourcesJar
+}
+
+// Bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = "zfeng" //仓库名称
+        name = "library" //替换成自己的
+        desc = "" //替换成自己的
+        websiteUrl = siteUrl //替换成自己的
+        vcsUrl = gitUrl //替换成自己的
+        licenses = ["Apache-2.0"]
+//        userOrg = "zfeng" //组织名称，换成自己的
+        publish = true //这个必须设置为true，默认为false只有这样才能发布
+        publicDownloadNumbers = true
+        version {
+            desc = "......"
+            //gpg的配置是在为jcenter自动上传到mavenCenter做准备，没有本签名配置无法将包同步到mavenCenter,因为只有经过签名的包才允许上传到maveCenter.
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password")
+                //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
+}
